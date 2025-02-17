@@ -13,9 +13,17 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   :root {
-    --color-1: #e0e0e0;
-    --color-2: #ffffff;
+    --color-1: #b0b0b0;
+    --color-2: #e0e0e0;
+    --color-3: #ffffff;
   }
+`;
+
+export const Logo = styled.h2`
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  align-self: flex-start;
 `;
 
 export const Container = styled.div`
@@ -25,14 +33,14 @@ export const Container = styled.div`
   min-height: 100vh;
   padding: 20px;
   font-family: 'Arial', sans-serif;
-  background-color: var(--color-1);
+  background-color: var(--color-3);
 `;
 
 export const FormContainer = styled.div`
   display: flex;
-  width: 700px;
+  width: 900px;
   max-width: 100%;
-  height: 400px;
+  height: 550px;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
@@ -51,7 +59,7 @@ export const FormSection = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: 40px;
-  background-color: ${props => props.isLeft ? 'var(--color-2)' : 'var(--color-1)'};
+  background-color: ${(props) => props.$isLeft ? 'var(--color-2)' : 'var(--color-1)'};
 
   @media (max-width: 768px) {
     padding: 20px;

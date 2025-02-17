@@ -1,59 +1,17 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
-import styled from "styled-components";
-
-const BoardContainer = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-`;
-
-const BoardTitle = styled.h1`
-  font-size: 24px;
-  margin-bottom: 10px;
-`;
-
-const BoardInfo = styled.div`
-  color: #666;
-  margin-bottom: 20px;
-`;
-
-const BoardContent = styled.div`
-  line-height: 1.6;
-`;
-
-const Button = styled.button`
-  margin-top: 20px;
-  padding: 10px 15px;
-  background-color: #f0f0f0;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 10px;
-`;
-
-const EditButton = styled(Button)`
-  background-color: #4CAF50;
-  color: white;
-`;
-
-const BoardImage = styled.img`
-  max-width: 100%;
-  margin-bottom: 20px;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
-
-const TextArea = styled.textarea`
-  width: 100%;
-  height: 200px;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
+import {
+  BoardContainer, 
+  BoardTitle,
+  BoardInfo,
+  BoardContent,
+  Button,
+  EditButton,
+  BoardImage,
+  Input,
+  TextArea,
+  DeleteButton
+} from '../styles/BoardDetailStyles';
 
 export default function BoardDetail({ boardId, onBack }) {
   const [board, setBoard] = useState(null);
@@ -68,7 +26,9 @@ export default function BoardDetail({ boardId, onBack }) {
 
   const fetchBoard = async () => {
     try {
-      const response = await axiosInstance.get(`https://front-mission.bigs.or.kr/boards/${boardId}`);
+      const response = await axiosInstance.get(
+        `https://front-mission.bigs.or.kr/boards/${boardId}`
+      );
       setBoard(response.data);
       setEditTitle(response.data.title);
       setEditContent(response.data.content);
@@ -86,16 +46,18 @@ export default function BoardDetail({ boardId, onBack }) {
     const queryParams = new URLSearchParams({
       title: editTitle,
       content: editContent,
-      category: board.boardCategory
+      category: board.boardCategory,
     }).toString();
-  
+
     try {
       const response = await axiosInstance.patch(
         `https://front-mission.bigs.or.kr/boards/${boardId}?${queryParams}`,
         editFile ? { file: editFile } : null,
         {
           headers: {
-            "Content-Type": editFile ? "multipart/form-data" : "application/json",
+            "Content-Type": editFile
+              ? "multipart/form-data"
+              : "application/json",
           },
         }
       );
@@ -105,13 +67,27 @@ export default function BoardDetail({ boardId, onBack }) {
       console.error("게시글 수정 실패:", error.message);
     }
   };
-  
 
   const handleCancel = () => {
     setIsEditing(false);
     setEditTitle(board.title);
     setEditContent(board.content);
     setEditFile(null);
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
+      try {
+        await axiosInstance.delete(
+          `https://front-mission.bigs.or.kr/boards/${boardId}`
+        );
+        alert("게시글이 성공적으로 삭제되었습니다.");
+        onBack();
+      } catch (error) {
+        console.error("게시글 삭제 실패:", error.message);
+        alert("게시글 삭제에 실패했습니다.");
+      }
+    }
   };
 
   if (!board) return <div>Loading...</div>;
@@ -131,12 +107,11 @@ export default function BoardDetail({ boardId, onBack }) {
             onChange={(e) => setEditContent(e.target.value)}
             placeholder="내용"
           />
-          <Input
-            type="file"
-            onChange={(e) => setEditFile(e.target.files[0])}
-          />
+          <Input type="file" onChange={(e) => setEditFile(e.target.files[0])} />
           <Button type="submit">저장</Button>
-          <Button type="button" onClick={handleCancel}>취소</Button>
+          <Button type="button" onClick={handleCancel}>
+            취소
+          </Button>
         </form>
       ) : (
         <>
@@ -146,10 +121,15 @@ export default function BoardDetail({ boardId, onBack }) {
             <p>카테고리: {board.boardCategory}</p>
             <p>작성일: {new Date(board.createdAt).toLocaleString()}</p>
           </BoardInfo>
-          <EditButton onClick={handleEdit}>글 수정</EditButton>
-          {board.imageUrl && <BoardImage src={board.imageUrl} alt="게시글 이미지" />}
+          {board.imageUrl && (
+            <BoardImage src={board.imageUrl} alt="게시글 이미지" />
+          )}
           <BoardContent>{board.content}</BoardContent>
-          <Button onClick={onBack}>목록으로 돌아가기</Button>
+          <ButtonContainer>
+            <EditButton onClick={handleEdit}>글 수정</EditButton>
+            <DeleteButton onClick={handleDelete}>글 삭제</DeleteButton>
+            <Button onClick={onBack}>목록으로 돌아가기</Button>
+          </ButtonContainer>
         </>
       )}
     </BoardContainer>

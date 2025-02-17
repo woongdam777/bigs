@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 import axios from "axios";
+import {
+  FormWrapper,
+  Title,
+  Input,
+  SignupButton
+} from '../styles/SignupFormStyles';
 
 export default function SignupForm() {
   const [username, setUsername] = useState("developer@bigs.or.kr");
@@ -63,41 +69,39 @@ export default function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>회원가입</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && (
-        <p style={{ color: "green" }}>회원가입이 성공적으로 완료되었습니다!</p>
-      )}
-      <input
+    <FormWrapper onSubmit={handleSubmit}>
+      <Title>회원가입</Title>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {success && <SuccessMessage>회원가입이 성공적으로 완료되었습니다!</SuccessMessage>}
+      <Input
         type="email"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         placeholder="이메일"
         required
       />
-      <input
+      <Input
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="사용자 이름"
         required
       />
-      <input
+      <Input
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="비밀번호"
         required
       />
-      <input
+      <Input
         type="password"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
         placeholder="비밀번호 확인"
         required
       />
-      <button type="submit">회원가입</button>
-    </form>
+      <SignupButton type="submit">Sign Up</SignupButton>
+    </FormWrapper>
   );
 }

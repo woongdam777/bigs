@@ -1,79 +1,27 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
-import styled from "styled-components";
 import BoardDetail from "./BoardDetail";
 import BoardWrite from "./BoardWrite";
-
-const PaginationContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-`;
-
-const PageButton = styled.button`
-  margin: 0 5px;
-  padding: 5px 10px;
-  background-color: ${(props) => (props.$active ? "#007bff" : "#f0f0f0")};
-  color: ${(props) => (props.$active ? "white" : "black")};
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-
-const ArrowButton = styled.button`
-  margin: 0 5px;
-  padding: 5px 10px;
-  background-color: #f0f0f0;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-
-const CategoryButton = styled.button`
-  margin: 0 5px;
-  padding: 5px 10px;
-  background-color: ${(props) => (props.$active ? "#007bff" : "#f0f0f0")};
-  color: ${(props) => (props.$active ? "white" : "black")};
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-`;
-
-const TableHeader = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 3fr 2fr;
-  font-weight: bold;
-  padding: 10px 0;
-  border-bottom: 2px solid #ddd;
-`;
-
-const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 3fr 2fr;
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
-`;
+import {
+  BoardContainer,
+  CategoryContainer,
+  CategoryButton,
+  TableContainer,
+  TableHeader,
+  TableRow,
+  WriteButton,
+  PaginationContainer,
+  PageButton
+} from '../styles/BoardListStyles';
 
 export default function BoardList() {
   const [boards, setBoards] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedBoardId, setSelectedBoardId] = useState(null);
   const [isWriting, setIsWriting] = useState(false);
-
-  const categoryMap = {
-    NOTICE: "공지",
-    FREE: "자유",
-    QNA: "Q&A",
-    ETC: "기타",
-  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -143,8 +91,8 @@ export default function BoardList() {
   }
 
   return (
-    <>
-       <div>
+    <BoardContainer>
+      <CategoryContainer>
         <CategoryButton
           onClick={() => handleCategoryChange("전체")}
           $active={selectedCategory === null}
@@ -160,33 +108,36 @@ export default function BoardList() {
             {value}
           </CategoryButton>
         ))}
-      </div>
+      </CategoryContainer>
 
-      <TableHeader>
-        <span>카테고리</span>
-        <span>게시글번호</span>
-        <span>제목</span>
-        <span>작성일</span>
-      </TableHeader>
-      {boards
-      .filter(board => !selectedCategory || board.category === selectedCategory)
-      .map((board) => (
-        <TableRow key={board.id} onClick={() => handleBoardClick(board.id)}>
-          <span>{categories[board.category]}</span>
-          <span>{board.id}</span>
-          <span>{board.title}</span>
-          <span>{new Date(board.createdAt).toLocaleString()}</span>
-        </TableRow>
-      ))}
+      <TableContainer>
+        <TableHeader>
+          <span>카테고리</span>
+          <span>게시글번호</span>
+          <span>제목</span>
+          <span>작성일</span>
+        </TableHeader>
+        {boards
+          .filter(board => !selectedCategory || board.category === selectedCategory)
+          .map((board) => (
+            <TableRow key={board.id} onClick={() => handleBoardClick(board.id)}>
+              <span>{categories[board.category]}</span>
+              <span>{board.id}</span>
+              <span>{board.title}</span>
+              <span>{new Date(board.createdAt).toLocaleString()}</span>
+            </TableRow>
+          ))}
+      </TableContainer>
 
-      <button onClick={handleWriteClick}>글작성</button>
+      <WriteButton onClick={handleWriteClick}>글작성</WriteButton>
+
       <PaginationContainer>
-        <ArrowButton
+        <PageButton
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 0}
         >
           &lt;
-        </ArrowButton>
+        </PageButton>
         {[...Array(totalPages)].map((_, index) => (
           <PageButton
             key={index}
@@ -196,13 +147,13 @@ export default function BoardList() {
             {index + 1}
           </PageButton>
         ))}
-        <ArrowButton
+        <PageButton
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages - 1}
         >
           &gt;
-        </ArrowButton>
+        </PageButton>
       </PaginationContainer>
-    </>
+    </BoardContainer>
   );
 }

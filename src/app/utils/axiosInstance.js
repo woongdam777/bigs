@@ -29,13 +29,15 @@ axiosInstance.interceptors.response.use(
       try {
         const { accessToken, refreshToken } = await refreshAccessToken();
         Cookies.set("accessToken", accessToken);
-        Cookies.set("refreshToken", refreshToken); // 새 리프레시 토큰도 저장
+        Cookies.set("refreshToken", refreshToken);
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         console.error("리프레시 실패:", refreshError.message);
-        // 여기서 로그아웃 처리를 할 수 있습니다.
+        // 로그아웃 처리
+        Cookies.remove("accessToken");
+        Cookies.remove("refreshToken");
         return Promise.reject(refreshError);
       }
     }

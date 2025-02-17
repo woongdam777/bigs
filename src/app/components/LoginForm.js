@@ -3,14 +3,18 @@
 import { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from "../context/AuthContext";
+import {
+  FormWrapper,
+  Title,
+  Input,
+  LoginButton
+} from '../styles/LoginFormStyles';
 
 export default function LoginForm() {
   const [username, setUsername] = useState("developer@bigs.or.kr");
   const [password, setPassword] = useState("123qwe!@#");
   const [error, setError] = useState(null);
-  const { setIsLoggedIn } = useAuth();
-
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -18,15 +22,18 @@ export default function LoginForm() {
     setError(null);
 
     try {
-      const response = await axios.post("https://front-mission.bigs.or.kr/auth/signin", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "https://front-mission.bigs.or.kr/auth/signin",
+        {
+          username,
+          password,
+        }
+      );
 
       const { accessToken, refreshToken } = response.data;
 
       Cookies.set("refreshToken", refreshToken, { secure: true });
-      login(accessToken);  // AuthContext의 login 함수 사용
+      login(accessToken);
 
       console.log("로그인 성공:", response.data);
     } catch (error) {
@@ -36,24 +43,24 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>로그인</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <input
+    <FormWrapper onSubmit={handleSubmit}>
+      <Title>로그인</Title>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+      <Input
         type="email"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        placeholder="이메일"
+        placeholder="e-mail"
         required
       />
-      <input
+      <Input
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="비밀번호"
+        placeholder="password"
         required
       />
-      <button type="submit">로그인</button>
-    </form>
+      <LoginButton type="submit">Log In</LoginButton>
+    </FormWrapper>
   );
 }
