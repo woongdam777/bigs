@@ -10,7 +10,8 @@ import {
   BoardImage,
   Input,
   TextArea,
-  DeleteButton
+  DeleteButton,
+  ButtonContainer
 } from '../styles/BoardDetailStyles';
 
 export default function BoardDetail({ boardId, onBack }) {

@@ -1,41 +1,13 @@
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
-import styled from "styled-components";
+import {
+  FormContainer, 
+  Input,
+  TextArea,
+  Select,
+  Button,
 
-const FormContainer = styled.div`
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
-
-const TextArea = styled.textarea`
-  width: 100%;
-  height: 200px;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
-
-const Select = styled.select`
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
-
-const Button = styled.button`
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 10px;
-`;
+} from '../styles/BoardWriteStyles';
 
 export default function BoardWrite({ onComplete }) {
   const [title, setTitle] = useState("");

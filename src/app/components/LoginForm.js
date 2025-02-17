@@ -35,7 +35,7 @@ export default function LoginForm() {
       Cookies.set("refreshToken", refreshToken, { secure: true });
       login(accessToken);
 
-      console.log("로그인 성공:", response.data);
+      // console.log("로그인 성공:", response.data);
     } catch (error) {
       console.error("로그인 실패:", error.response?.data || error.message);
       setError(error.response?.data?.error || "로그인에 실패했습니다.");

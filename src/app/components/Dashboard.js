@@ -18,9 +18,8 @@ function Dashboard() {
       <LeftSection>
         <Logo>BIGS</Logo>
         <UserInfo>
-          <p>환영합니다</p>
-          <p>아이디: {user?.username || 'N/A'}</p>
-          <p>이름: {user?.name || '사용자'}님.</p>
+          <p>환영합니다. {user?.name || '사용자'}님.</p>
+          <p>{user?.username || 'N/A'}</p>
         </UserInfo>
         <Logout />
       </LeftSection>
