@@ -44,30 +44,34 @@ export default function BoardDetail({ boardId, onBack }) {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const queryParams = new URLSearchParams({
+    const formData = new FormData();
+  
+    const jsonData = JSON.stringify({
       title: editTitle,
       content: editContent,
       category: board.boardCategory,
-    }).toString();
-
+    });
+  
+    formData.append('request', new Blob([jsonData], { type: 'application/json' }));
+  
+    if (editFile) {
+      formData.append('file', editFile);
+    }
+  
     try {
       const response = await axiosInstance.patch(
-        `https://front-mission.bigs.or.kr/boards/${boardId}?${queryParams}`,
-        editFile ? { file: editFile } : null,
-        {
-          headers: {
-            "Content-Type": editFile
-              ? "multipart/form-data"
-              : "application/json",
-          },
-        }
+        `https://front-mission.bigs.or.kr/boards/${boardId}`,
+        formData
       );
       setBoard(response.data);
       setIsEditing(false);
+      await fetchBoard();
     } catch (error) {
       console.error("게시글 수정 실패:", error.message);
     }
   };
+  
+   
 
   const handleCancel = () => {
     setIsEditing(false);
@@ -108,7 +112,11 @@ export default function BoardDetail({ boardId, onBack }) {
             onChange={(e) => setEditContent(e.target.value)}
             placeholder="내용"
           />
-          <Input type="file" onChange={(e) => setEditFile(e.target.files[0])} />
+          <Input 
+            type="file" 
+            onChange={(e) => setEditFile(e.target.files[0])} 
+            accept="image/*"
+          />
           <Button type="submit">저장</Button>
           <Button type="button" onClick={handleCancel}>
             취소

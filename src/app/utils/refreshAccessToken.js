@@ -7,11 +7,10 @@ export async function refreshAccessToken() {
     if (!refreshToken) {
       throw new Error("Refresh token not found");
     }
-
+    console.log(refreshToken);
     const response = await axios.post(
       "https://front-mission.bigs.or.kr/auth/refresh",
-      { refreshToken: refreshToken },
-      { withCredentials: false }
+      { refreshToken: refreshToken }
     );
 
     return {

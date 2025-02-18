@@ -1,5 +1,11 @@
 import styled from "styled-components";
 
+const breakpoints = {
+  mobile: '480px',
+  tablet: '768px',
+  desktop: '1024px'
+};
+
 export const FormWrapper = styled.form`
   display: flex;
   flex-direction : column;
@@ -9,6 +15,10 @@ export const FormWrapper = styled.form`
   height: 100%;
   padding: 10px;
   border-radius: 20px;
+
+  @media (min-width: ${breakpoints.tablet}) {
+    height: 100vh;
+  }
 `;
 
 export const Title = styled.h2`

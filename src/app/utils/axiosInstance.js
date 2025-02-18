@@ -6,9 +6,22 @@ const axiosInstance = axios.create({
   withCredentials: false,
 });
 
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+function onRefreshed(accessToken) {
+  refreshSubscribers.map(cb => cb(accessToken));
+  refreshSubscribers = [];
+}
+
+function addRefreshSubscriber(cb) {
+  refreshSubscribers.push(cb);
+}
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = Cookies.get("accessToken");
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -22,9 +35,18 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // 토큰 만료 시 처리
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 403 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          addRefreshSubscriber((accessToken) => {
+            originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+            resolve(axiosInstance(originalRequest));
+          });
+        });
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
         const { accessToken, refreshToken } = await refreshAccessToken();
@@ -32,12 +54,15 @@ axiosInstance.interceptors.response.use(
         Cookies.set("refreshToken", refreshToken);
 
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        onRefreshed(accessToken);
+        isRefreshing = false;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         console.error("리프레시 실패:", refreshError.message);
-        // 로그아웃 처리
+        isRefreshing = false;
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
+        window.location.href = "/";
         return Promise.reject(refreshError);
       }
     }

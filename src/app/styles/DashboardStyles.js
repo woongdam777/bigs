@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-// 브레이크포인트 정의
 const breakpoints = {
   mobile: '480px',
   tablet: '768px',
@@ -10,8 +9,8 @@ const breakpoints = {
 export const DashboardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 900px;
+  height: 90%
+  width: 900px;
   height: auto;
   font-family: "Arial", sans-serif;
   background-color: var(--color-3);
@@ -21,32 +20,39 @@ export const DashboardContainer = styled.div`
 
   @media (min-width: ${breakpoints.tablet}) {
     flex-direction: row;
-    height: 550px;
+    width: 900px;
+    height: 90vh;
+    overflow: hidden;
   }
 `;
 
 export const LeftSection = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
   padding: 20px;
   background-color: var(--color-2);
+  height: 30%;
 
   @media (min-width: ${breakpoints.tablet}) {
+    flex: 1;
+    height: 100%;
     padding: 30px;
     border-radius: 10px 0 0 10px;
   }
 `;
 
 export const RightSection = styled.div`
-  flex: 1;
   padding: 20px;
   background-color: var(--color-1);
+  overflow-y: auto;
+  height: 70%;
 
   @media (min-width: ${breakpoints.tablet}) {
+    height: 100%;
     flex: 3;
     padding: 40px;
     border-radius: 0 10px 10px 0;
+    max-height: none;
   }
 `;
 

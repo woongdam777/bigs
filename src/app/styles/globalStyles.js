@@ -56,10 +56,9 @@ export const FormContainer = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 900px;
-  height: auto;
+  height: 90vh;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   position: relative;
   font-size: 1.4rem;
 
@@ -71,14 +70,17 @@ export const FormContainer = styled.div`
 `;
 
 export const FormSection = styled.div`
-  flex: 1;
+  
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 20px;
   background-color: ${(props) => props.$isLeft ? 'var(--color-2)' : 'var(--color-1)'};
+  height: ${(props) => props.$isLeft ? '25%' : '75%'};
 
   @media (min-width: ${breakpoints.tablet}) {
+    flex: 1;
+    height: auto;
     padding: 40px;
   }
 `;

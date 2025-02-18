@@ -5,7 +5,7 @@ import LoginForm from "./components/LoginForm";
 import SignupForm from "./components/SignupForm";
 import Dashboard from "./components/Dashboard";
 import { GlobalStyle, Logo, Container, FormContainer, FormSection, ToggleButton } from './styles/globalStyles';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider, useAuth} from './context/AuthContext';
 
 function UnauthContent({ isLogin, setIsLogin }) {
   return (

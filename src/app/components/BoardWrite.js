@@ -1,41 +1,55 @@
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import {
-  FormContainer, 
+  FormContainer,
   Input,
   TextArea,
   Select,
   Button,
-
-} from '../styles/BoardWriteStyles';
+} from "../styles/BoardWriteStyles";
 
 export default function BoardWrite({ onComplete }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("NOTICE");
+  const [addFile, setAddFile] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const postData = {
-      title,
-      content,
-      category
-    };
+    const formData = new FormData();
+
+    const jsonData = JSON.stringify({
+      title: title,
+      content: content,
+      category: category,
+    });
+  
+    formData.append('request', new Blob([jsonData], { type: 'application/json' }));
+  
+    if (addFile) {
+      formData.append('file', addFile);
+    }
 
     try {
       const response = await axiosInstance.post(
-        'https://front-mission.bigs.or.kr/boards',
-        postData,
+        "https://front-mission.bigs.or.kr/boards",
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-      onComplete(response.data);
+      if (response.status === 200 || response.status === 201) {
+        onComplete(response.data);
+      } else {
+        throw new Error("Unexpected response status");
+      }
     } catch (error) {
-      console.error("게시글 작성 실패:", error.message);
+      console.error("게시글 작성 실패:", error.response?.data || error.message);
+      console.error("Status:", error.response?.status);
+      console.error("Headers:", error.response?.headers);
     }
   };
 
@@ -61,8 +75,15 @@ export default function BoardWrite({ onComplete }) {
           placeholder="내용"
           required
         />
+        <Input
+          type="file"
+          onChange={(e) => setAddFile(e.target.files[0])}
+          accept="image/*"
+        />
         <Button type="submit">작성완료</Button>
-        <Button type="button" onClick={onComplete}>취소</Button>
+        <Button type="button" onClick={() => onComplete()}>
+          취소
+        </Button>
       </form>
     </FormContainer>
   );
